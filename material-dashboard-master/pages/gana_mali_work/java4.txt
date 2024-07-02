@@ -1,0 +1,160 @@
+ import java.io.*;
+        import javax.servlet.*;
+        import javax.servlet.http.*;
+public class serverInfo extends HttpServlet implements Servlet
+{
+    protected void doGet(HttpServletRequest req,HttpServletResponse res)throws IOException,ServletException
+    {
+        res.setContentType("text/html");
+        PrintWriter pw=res.getWriter();
+        pw.println("<html><body><h2>Information about Http Request</h2>");
+        pw.println("<br>Server Name: "+req.getServerName());
+        pw.println("<br>Server Port: "+req.getServerPort());
+        pw.println("<br>Ip Address: "+req.getRemoteAddr());
+//pw.println("<br>Server Path: "+req.getServerPath());        pw.println("<br>Client Browser: "+req.getHeader("User-Agent"));
+        pw.println("</body></html>");
+        pw.close();
+    }
+}
+
+
+import java.io.*; 
+import javax.servlet.*; 
+import javax.servlet.http.*; 
+import java.sql.*; 
+public class Jdbcservlet extends HttpServlet 
+{ 
+   public void doGet(HttpServletRequest req,HttpServletResponse res)throws 
+IOException, ServletException 
+   { 
+     res.setContentType("text/html"); 
+       PrintWriter out = res.getWriter(); 
+       try 
+       { 
+        out.println("<html>"); 
+          out.println("<body>"); 
+      Class.forName("postgresql.Driver"); 
+      out.println("<h1>driver loaded</h1>"); 
+      Connection c=DriverManager.getConnection 
+("jdbc:postgresql:serv","postgres",""); 
+          out.println("<br><h1>connection created</h1>"); 
+      Statement st=c.createStatement(); 
+      ResultSet rs=st.executeQuery("select * from department"); 
+          while(rs.next()) 
+          { 
+           out.println("<table border= 1>"); 
+             out.println("<tr>");  
+       out.print("<td><h3>"+rs.getInt(1)+ 
+"</td><td>"+rs.getString(2)+"</td></h3>"); 
+             out.println("</tr>"); 
+             out.println("</table>"); 
+      } 
+  } 
+
+
+
+
+// Webcount.java 
+import java.io.*; 
+import javax.servlet.*; 
+import javax.servlet.http.*; 
+import java.util.*; 
+public class Webcount extends HttpServlet 
+{ 
+public void doGet(HttpServletRequest req,HttpServletResponse res)throws 
+ServletException,IOException 
+{ 
+Integer count; 
+res.setContentType("text/html"); 
+PrintWriter out=res.getWriter(); 
+HttpSession session=req.getSession(true); 
+String heading; 
+count=(Integer)session.getAttribute("accessCount"); 
+Object Oriented Programming using Java - II  
+Servlets and JSP 
+if(count==null) 
+{ 
+count=new Integer(0); 
+heading="Welcome,newcomer"; 
+} 
+else 
+{ 
+heading="Welcome back"; 
+count=new Integer((count.intValue())+1); 
+} 
+session.setAttribute("accessCount",count); 
+out.println("<BODY><HTML>"+"<H1>"+heading+"</H1>\n"+"<H2>Information 
+on your session:</H2>\n"+"Session ID:"+session.getId()+"<br>Last 
+Accessed on:"+new Date(session.getLastAccessedTime())+"<br>Number of 
+Previous Accesses:"+count+"<br></BODY></HTML>"); 
+} 
+public void doPost(HttpServletRequest req,HttpServletResponse res)throws 
+ServletException,IOException 
+{ 
+} 
+}
+
+
+
+<html> 
+ <head>  
+  <title>Login Form</title> 
+ </head> 
+ <body bgcolor = "pink"> 
+  <form action = "http://localhost:8080/ 
+servlets-examples/servlet/Loginservlet" method ="GET"> 
+  <br><br><br> 
+  <h2> Login Form</h2> 
+  User Name  = <input type = "text" name = "us"><br><br> 
+  Password = <input type = "text" name = "pd"> 
+  <br><br> 
+  <input type = "submit" value = "Login"> 
+  <input type = "reset" value = "Cancel "> 
+ </form> 
+</body> 
+</html> 
+// Loginservlet.java 
+import java.io.*; 
+import javax.servlet.*; 
+import javax.servlet.http.*; 
+import java.sql.*; 
+public class Loginservlet extends HttpServlet 
+{ 
+   public void doGet(HttpServletRequest req,HttpServletResponse res)throws 
+IOException, ServletException 
+    { 
+     String uname  = req.getParameter("us"); 
+       String pwd = req.getParameter("pd"); 
+       res.setContentType("text/html"); 
+       PrintWriter out = res.getWriter(); 
+       try 
+       { 
+        out.println("<html>"); 
+          out.println("<body>"); 
+      Class.forName("postgresql.Driver"); 
+      out.println("<h1>Driver Loaded</h1>"); 
+      Connection c=DriverManager.getConnection 
+("jdbc:postgresql:mj","postgres",""); 
+Object Oriented Programming using Java - II  Servlets and JSP 
+ 
+4.78 
+   out.println("<br><h1>Connection Established</h1>"); 
+      Statement st=c.createStatement(); 
+      ResultSet rs=st.executeQuery("select * from admin"); 
+          while(rs.next()) 
+          { 
+           if(uname.equals(rs.getString(1))&&pwd.equals(rs.getString(2))) 
+             out.println("<h2>Login Successfully....</h2>"); 
+              else 
+             out.println("<h3> NOT ! Try Again...</h3>"); 
+          } 
+      } 
+       catch(Exception e) 
+  { 
+    out.println("error"+e); 
+  } 
+       out.println("Successfully JDBC Done..."); 
+       out.println("</body>"); 
+       out.println("</html>"); 
+   } 
+} 
